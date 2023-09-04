@@ -4,7 +4,7 @@ from datetime import datetime
 conn = psycopg2.connect(
     dbname='CarRegistry',
     user='postgres',
-    password='1234',
+    password='Jexon192005',
     host='localhost',
     port='5432'
 )
@@ -36,9 +36,21 @@ def exit_time():
     conn.commit()
     print("Exit time updated successfully!")
 
-while True:
-    choice = input("\n1. Add Entry\n2. View History\n3. Exit Time\n4. Exit\nChoose (1/2/3/4): ")
+def generate_profit_report():
+    cur.execute("SELECT COUNT(*) * 5.00 FROM car_records WHERE exit_time IS NOT NULL")
+    total_profit = cur.fetchone()[0]
+    print(f"Ganancias totales hasta la fecha: ${total_profit:.2f}")
 
+def generate_vehicle_report():
+    cur.execute("SELECT brand, COUNT(*) FROM car_records GROUP BY brand")
+    records = cur.fetchall()
+    print("Reporte de Vehículos:")
+    for record in records:
+        brand, count = record
+        print(f"{brand}: {count}")
+
+while True:
+    choice = input("\n1. Add Entry\n2. View History\n3. Exit Time\n4. Generate Profit Report\n5. Generate Vehicle Report\n6. Exit\nChoose (1/2/3/4/5/6): ")
     if choice == '1':
         print()
         print()
@@ -60,6 +72,16 @@ while True:
         exit_time()
 
     elif choice == '4':
+        print()
+        print()
+        generate_profit_report()
+
+    elif choice == '5':
+        print()
+        print()
+        generate_vehicle_report()
+
+    elif choice == '6':
         break
 
 cur.close()
